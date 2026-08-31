@@ -1,0 +1,269 @@
+========================================
+assign with nested array and embedded output
+========================================
+
+{assign var='cfg' value=[
+    'columns' => [
+        'name' => {"Name"|ef_translate}
+    ]
+]}
+
+----------------------------------------
+
+(template
+  (tag
+    (tag_name)
+    (attribute
+      name: (attribute_name)
+      value: (string
+        (string_content)))
+    (attribute
+      name: (attribute_name)
+      value: (array
+        (array_pair
+          key: (string
+            (string_content))
+          value: (array
+            (array_pair
+              key: (string
+                (string_content))
+              value: (output
+                expression: (filter_expression
+                  value: (string
+                    (string_content))
+                  (modifier
+                    name: (modifier_name))))))))))
+  (text))
+
+========================================
+variable assignment shorthand
+========================================
+
+{$tabs = ['a', 'b']}
+
+----------------------------------------
+
+(template
+  (output
+    assignment: (assignment
+      left: (variable
+        (identifier))
+      right: (array
+        (string
+          (string_content))
+        (string
+          (string_content)))))
+  (text))
+
+========================================
+modifier on a string operand
+========================================
+
+{if $level == 'Foo\\Bar::BAZ'|constant}x{/if}
+
+----------------------------------------
+
+(template
+  (if_statement
+    condition: (binary_expression
+      left: (variable
+        (identifier))
+      right: (filter_expression
+        value: (string
+          (string_content))
+        (modifier
+          name: (modifier_name))))
+    body: (body
+      (text)))
+  (text))
+
+========================================
+qualified php constant
+========================================
+
+{if $t == \Efront\Model\Content::TYPE_EVENT}x{/if}
+
+----------------------------------------
+
+(template
+  (if_statement
+    condition: (binary_expression
+      left: (variable
+        (identifier))
+      right: (qualified_name))
+    body: (body
+      (text)))
+  (text))
+
+========================================
+uppercase AS in foreach
+========================================
+
+{foreach $widget.courses AS $course}{$course}{/foreach}
+
+----------------------------------------
+
+(template
+  (foreach_statement
+    collection: (variable
+      (identifier)
+      (identifier))
+    key: (variable
+      (identifier))
+    body: (body
+      (output
+        expression: (variable
+          (identifier)))))
+  (text))
+
+========================================
+array count modifier
+========================================
+
+{if $images|@count > 0}x{/if}
+
+----------------------------------------
+
+(template
+  (if_statement
+    condition: (binary_expression
+      left: (filter_expression
+        value: (variable
+          (identifier))
+        (modifier
+          name: (modifier_name)))
+      right: (number))
+    body: (body
+      (text)))
+  (text))
+
+========================================
+trailing nofilter flag
+========================================
+
+{$cfg|@json_encode nofilter}
+
+----------------------------------------
+
+(template
+  (output
+    expression: (filter_expression
+      value: (variable
+        (identifier))
+      (modifier
+        name: (modifier_name)))
+    (flag))
+  (text))
+
+========================================
+user-defined block plugin
+========================================
+
+{eF_template_addToHead}<link>{/eF_template_addToHead}
+
+----------------------------------------
+
+(template
+  (tag
+    (tag_name))
+  (text)
+  (close_tag
+    (tag_name))
+  (text))
+
+========================================
+capture block
+========================================
+
+{capture name="sel"}<b>hi</b>{/capture}
+
+----------------------------------------
+
+(template
+  (block_statement
+    (tag_name)
+    (attribute
+      name: (attribute_name)
+      value: (string
+        (string_content)))
+    body: (body
+      (text))
+    (end_tag))
+  (text))
+
+========================================
+function block with bare name
+========================================
+
+{function print_row depth=3}<tr></tr>{/function}
+
+----------------------------------------
+
+(template
+  (block_statement
+    (tag_name)
+    (identifier)
+    (attribute
+      name: (attribute_name)
+      value: (number))
+    body: (body
+      (text))
+    (end_tag))
+  (text))
+
+========================================
+tag used as a value
+========================================
+
+{assign var='t' value=['data' => {include file="x.tpl"}]}
+
+----------------------------------------
+
+(template
+  (tag
+    (tag_name)
+    (attribute
+      name: (attribute_name)
+      value: (string
+        (string_content)))
+    (attribute
+      name: (attribute_name)
+      value: (array
+        (array_pair
+          key: (string
+            (string_content))
+          value: (tag
+            (tag_name)
+            (attribute
+              name: (attribute_name)
+              value: (string
+                (string_content))))))))
+  (text))
+
+========================================
+javascript braces are literal text
+========================================
+
+<script>
+if (x) {
+  go();
+}
+</script>
+
+----------------------------------------
+
+(template
+  (text))
+
+========================================
+literal block is raw
+========================================
+
+{literal}<script>var a = {b:1};</script>{/literal}
+
+----------------------------------------
+
+(template
+  (literal_statement
+    (raw_text))
+  (text))

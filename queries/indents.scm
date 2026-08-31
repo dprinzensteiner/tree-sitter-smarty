@@ -1,21 +1,35 @@
 [
- (if)
- (foreach)
- (block)
- (nocache)
-] @indent.begin
+  (if_statement)
+  (elseif_clause)
+  (else_clause)
+  (foreach_statement)
+  (foreachelse_clause)
+  (section_statement)
+  (sectionelse_clause)
+  (for_statement)
+  (forelse_clause)
+  (while_statement)
+  (block_statement)
+  (literal_statement)
+  (array)
+] @indent
 
 [
- (else_if)
- (else)
- (foreach_else)
-] @indent.branch
+  "{/if}"
+  "{/foreach}"
+  "{/section}"
+  "{/for}"
+  "{/while}"
+  "{/literal}"
+  "]"
+  (end_tag)
+] @outdent
 
+; else/elseif close the previous branch and open a new one.
 [
- "{/if}"
- "{/foreach}"
- "{/block}"
- "{/nocache}"
-] @indent.end
-
-(ERROR) @indent.auto
+  "{else}"
+  "{elseif"
+  "{foreachelse}"
+  "{sectionelse}"
+  "{forelse}"
+] @outdent
